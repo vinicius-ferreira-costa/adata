@@ -3,7 +3,7 @@
 Extensão do Google Chrome (Manifest V3) que captura, organiza e exporta os
 dados acadêmicos da plataforma **Adalove** do Inteli
 (`adalove.inteli.edu.br`). Todo o processamento acontece localmente —
-**nenhum dado do aluno sai do navegador** (ver [PRIVACY.md](PRIVACY.md)).
+**nenhum dado do aluno sai do navegador**.
 
 > **Aviso**: o Adata é uma ferramenta independente, feita por estudantes,
 > sem vínculo oficial com o Inteli ou com a plataforma Adalove.
