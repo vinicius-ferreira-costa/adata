@@ -5,6 +5,9 @@ dados acadêmicos da plataforma **Adalove** do Inteli
 (`adalove.inteli.edu.br`). Todo o processamento acontece localmente —
 **nenhum dado do aluno sai do navegador** (ver [PRIVACY.md](PRIVACY.md)).
 
+> **Aviso**: o Adata é uma ferramenta independente, feita por estudantes,
+> sem vínculo oficial com o Inteli ou com a plataforma Adalove.
+
 ## Instalação em modo desenvolvedor
 
 1. Clone/baixe este repositório.
@@ -123,18 +126,23 @@ exibido (duas turmas conferidas: 8.53 e 7.80). Por isso a classificação é
 por item (`gradeWeight > 0` ⇒ vale nota) e não por payload.
 
 **Frequência**: cada card de encontro traz `attendance1..3` (três check-ins
-por dia de aula) com 10 = presente, 0 = falta, -1 = não se aplica. O limite
-de faltas é 20% do total de check-ins — calibrado contra a própria Adalove
-(módulo com 135 check-ins → limite 27; cada check-in vale 1/135 = 0,74%).
+por dia de aula) com 10 = presente, 0 = falta, -1 = não se aplica. O total de
+check-ins varia por turma/módulo; o limite de faltas é sempre **20% do total
+daquela turma**, calculado sobre os dados capturados. A regra foi calibrada
+contra a própria Adalove — por exemplo, num módulo específico com 135
+check-ins, a plataforma exibia limite de 27 faltas (27/135 = 20%) e cada
+check-in valendo 1/135 = 0,74% da presença. Os números do exemplo são desse
+módulo, não constantes.
 
 ### Decisões de projeto
 
-- **Dados brutos no storage, normalização no popup.** O contrato da API
-  `apiv2` ainda não está mapeado; guardar o JSON cru permite evoluir a
-  normalização sem exigir recaptura.
+- **Dados brutos no storage, normalização no popup.** Guardar o JSON cru
+  permite reprocessar e evoluir a normalização sobre capturas antigas sem
+  exigir recaptura do aluno.
 - **Eixo nunca é chutado.** A cascata é: campo estruturado do payload (só se
   for um dos cinco eixos válidos) → mapa professor→eixo (rede de segurança
-  frágil, documentada em `normalize.js`) → `"Indefinido"`.
+  frágil, documentada em `normalize.js`) → `"Orientação"` (na API real, card
+  sem eixo é atividade de orientação).
 - **Permissões mínimas.** Só `storage` + host permissions dos dois domínios
   do Inteli. Sem `downloads`, sem `history`, sem `tabs`.
 
@@ -151,4 +159,10 @@ de faltas é 20% do total de check-ins — calibrado contra a própria Adalove
 - **Captura ativa**: dados frescos a cada recarga da Adalove (ver
   arquitetura acima).
 - **Eixo "Orientação"**: cards sem `axisCaption` são atividades de
-  orientação — sexto balde de filtro, no lugar do antigo "Indefinido".
+  orientação — sexto balde de filtro, no lugar do antigo "Indefinido"
+  (registro histórico: até a v4.0 a cascata terminava em "Indefinido").
+
+## Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para
+os termos completos.
