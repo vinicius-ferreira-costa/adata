@@ -1,0 +1,16 @@
+{
+  "name": "adata",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Extensão Chrome (MV3) que captura, organiza e exporta dados acadêmicos da Adalove (Inteli). Testes dos módulos puros.",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "roots": ["<rootDir>/tests"]
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

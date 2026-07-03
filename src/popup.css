@@ -1,0 +1,293 @@
+/*
+ * popup.css — estilo do popup.
+ *
+ * Dark mode via variáveis CSS + prefers-color-scheme: o popup segue o tema
+ * do sistema sem JavaScript nem toggle manual.
+ */
+
+:root {
+  --fundo: #ffffff;
+  --fundo-2: #f4f5f7;
+  --texto: #1c1e21;
+  --texto-sutil: #6b7280;
+  --borda: #d7dade;
+  --acento: #6d28d9;
+  --acento-texto: #ffffff;
+  --perigo: #dc2626;
+  --alerta: #d97706;
+  --ok: #16a34a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fundo: #17181c;
+    --fundo-2: #23252b;
+    --texto: #e7e9ee;
+    --texto-sutil: #9aa1ad;
+    --borda: #3a3d45;
+    --acento: #8b5cf6;
+    --acento-texto: #ffffff;
+    --perigo: #f87171;
+    --alerta: #fbbf24;
+    --ok: #4ade80;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 420px;
+  margin: 0;
+  padding: 12px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 13px;
+  color: var(--texto);
+  background: var(--fundo);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+#seletor-turma { max-width: 240px; }
+#ultima-captura { margin: 0 0 8px; }
+
+h1 { font-size: 18px; margin: 0; }
+h2 { font-size: 14px; margin: 14px 0 6px; }
+
+.sutil { color: var(--texto-sutil); font-size: 11px; font-weight: normal; }
+.credito {
+  margin: 4px 0 0;
+  text-align: center;
+  color: var(--texto-sutil);
+  font-size: 10px;
+}
+.oculto { display: none !important; }
+
+/* Abas */
+.abas { display: flex; gap: 4px; border-bottom: 1px solid var(--borda); }
+.aba {
+  padding: 6px 14px;
+  border: none;
+  background: none;
+  color: var(--texto-sutil);
+  font: inherit;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.aba.ativa { color: var(--texto); border-bottom-color: var(--acento); font-weight: 600; }
+
+.painel { padding-top: 10px; }
+
+/* Frequência — formato próprio: barra de presença + margem de faltas. */
+.cartao-frequencia {
+  background: var(--fundo-2);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.freq-topo { display: flex; justify-content: space-between; align-items: baseline; }
+.freq-titulo { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+.freq-percentual { font-size: 18px; font-weight: 700; }
+.freq-percentual.ok { color: var(--ok); }
+.freq-percentual.alerta { color: var(--alerta); }
+.freq-percentual.risco { color: var(--perigo); }
+.freq-barra {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--borda);
+  margin: 8px 0 6px;
+  overflow: hidden;
+}
+/* A cor acompanha o risco: verde (folga) → âmbar (metade da margem gasta)
+   → vermelho (a 80% do limite de 20% de faltas, ou estourado). */
+#freq-barra-preenchida { height: 100%; border-radius: 3px; transition: width 0.3s, background 0.3s; }
+#freq-barra-preenchida.ok { background: var(--ok); }
+#freq-barra-preenchida.alerta { background: var(--alerta); }
+#freq-barra-preenchida.risco { background: var(--perigo); }
+.freq-resumo { margin: 4px 0 6px; }
+.freq-aviso { margin: 2px 0 4px; font-weight: 600; }
+.freq-aviso.alerta { color: var(--alerta); }
+.freq-aviso.risco { color: var(--perigo); }
+.freq-detalhes { display: flex; gap: 14px; color: var(--texto-sutil); font-size: 12px; }
+.freq-detalhes strong { color: var(--texto); }
+
+/* Busca */
+#busca {
+  width: 100%;
+  font: inherit;
+  color: var(--texto);
+  background: var(--fundo-2);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-bottom: 10px;
+}
+
+/* Status oficial (aba Notas) */
+.status-oficial {
+  background: var(--fundo-2);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.status-oficial:empty { display: none; }
+
+/* Nota pendente (ponderada sem nota lançada) */
+.badge.pendente { border-color: var(--perigo); color: var(--perigo); }
+
+/* Gráfico de evolução da média — barras (média da semana) + linha (acumulada) */
+.bloco-grafico { margin-bottom: 10px; }
+#grafico-evolucao svg { display: block; width: 100%; height: auto; }
+#grafico-evolucao .barra { fill: url(#adata-grad); }
+#grafico-evolucao .grad-topo { stop-color: var(--acento); stop-opacity: 0.95; }
+#grafico-evolucao .grad-base { stop-color: var(--acento); stop-opacity: 0.35; }
+#grafico-evolucao .linha {
+  fill: none;
+  stroke: var(--ok);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#grafico-evolucao .ponto { fill: var(--ok); stroke: var(--fundo); stroke-width: 1.5; }
+#grafico-evolucao .grade { stroke: var(--borda); stroke-width: 0.5; stroke-dasharray: 3 3; }
+#grafico-evolucao .rotulo { fill: var(--texto-sutil); font-size: 9px; }
+#grafico-evolucao .valor-barra {
+  fill: var(--texto);
+  font-weight: 600;
+  /* Halo da cor do fundo: o número continua legível cruzando a linha. */
+  paint-order: stroke;
+  stroke: var(--fundo);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.legenda-grafico {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--texto-sutil);
+}
+.legenda-grafico span { display: inline-flex; align-items: center; gap: 5px; }
+.legenda-grafico .amostra-barra {
+  width: 10px; height: 10px; border-radius: 3px; background: var(--acento); opacity: 0.8;
+}
+.legenda-grafico .amostra-linha {
+  width: 14px; height: 3px; border-radius: 2px; background: var(--ok);
+}
+
+
+/* Contadores */
+.contadores { display: flex; gap: 8px; margin-bottom: 10px; }
+.contador {
+  flex: 1;
+  background: var(--fundo-2);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+.contador strong { display: block; font-size: 20px; }
+.contador span { color: var(--texto-sutil); font-size: 11px; }
+
+/* Filtros */
+fieldset {
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 0 0 10px;
+}
+legend { font-size: 11px; color: var(--texto-sutil); padding: 0 4px; }
+.checkboxes { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.checkboxes label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.filtro-semana { display: block; margin-top: 8px; }
+
+select, input[type="number"], input[type="text"]:not(#busca) {
+  font: inherit;
+  color: var(--texto);
+  background: var(--fundo-2);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+input[type="number"], #reverso-media { width: 64px; }
+
+/* Botões */
+.acoes { display: flex; gap: 6px; margin-bottom: 6px; }
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid var(--borda);
+  background: var(--fundo-2);
+  color: var(--texto);
+  padding: 6px 10px;
+}
+.acoes button { background: var(--acento); color: var(--acento-texto); border-color: var(--acento); }
+button:hover { filter: brightness(1.1); }
+.secundario { margin: 6px 0; }
+
+/* Listas */
+.lista { list-style: none; margin: 8px 0; padding: 0; max-height: 260px; overflow-y: auto; }
+.lista li {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--borda);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lista li:last-child { border-bottom: none; }
+.badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: var(--fundo-2);
+  border: 1px solid var(--borda);
+  color: var(--texto-sutil);
+  white-space: nowrap;
+}
+.item-titulo { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-nota { width: 58px; }
+.nota-simulada { outline: 2px solid var(--acento); }
+
+.vazio { color: var(--texto-sutil); text-align: center; padding: 16px 8px; }
+
+/* Notas */
+.metricas { display: flex; gap: 8px; margin-bottom: 10px; }
+.metrica {
+  flex: 1;
+  background: var(--fundo-2);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+.metrica span { display: block; color: var(--texto-sutil); font-size: 11px; margin-bottom: 4px; }
+.metrica strong { font-size: 18px; }
+
+.categorias { display: flex; gap: 8px; }
+.categoria {
+  flex: 1;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 6px;
+  text-align: center;
+  font-size: 11px;
+}
+.categoria strong { display: block; font-size: 15px; }
+
+.presenca label { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; }
+.metricas-linha { margin-top: 6px; }
+.metricas-linha .estourou { color: var(--perigo); font-weight: 600; }
+.metricas-linha .dentro { color: var(--ok); }
+
+.reverso label { display: block; margin: 6px 0; }
+.reverso select { max-width: 100%; }
+.resultado { font-weight: 600; margin: 8px 0 2px; }
+.resultado.impossivel { color: var(--perigo); }
+.resultado.garantido { color: var(--ok); }

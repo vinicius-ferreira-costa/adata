@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Adata</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <h1>Adata</h1>
+    <!-- Seletor de turma: as capturas são separadas por módulo (senão as
+         médias e a frequência de módulos diferentes se misturam). -->
+    <select id="seletor-turma" title="Turma / módulo"></select>
+  </header>
+  <p id="ultima-captura" class="sutil"></p>
+
+  <!-- Navegação por abas. Botões (não links) por acessibilidade no popup. -->
+  <nav class="abas" role="tablist">
+    <button id="aba-autoestudos" class="aba ativa" role="tab" aria-selected="true">Autoestudos</button>
+    <button id="aba-notas" class="aba" role="tab" aria-selected="false">Notas</button>
+  </nav>
+
+  <!-- ============================ AUTOESTUDOS ============================ -->
+  <section id="painel-autoestudos" class="painel" role="tabpanel">
+
+    <!-- Frequência calculada dos check-ins capturados (attendance1..3 dos
+         cards de encontro). Fica na primeira aba porque é a informação que
+         o aluno mais confere no dia a dia. -->
+    <div id="cartao-frequencia" class="cartao-frequencia oculto">
+      <div class="freq-topo">
+        <span class="freq-titulo">Frequência</span>
+        <span id="freq-percentual" class="freq-percentual"></span>
+      </div>
+      <div class="freq-barra"><div id="freq-barra-preenchida"></div></div>
+      <p id="freq-resumo" class="freq-resumo"></p>
+      <!-- Aviso escalonado: some enquanto a margem de faltas está folgada. -->
+      <p id="freq-aviso" class="freq-aviso oculto"></p>
+      <div class="freq-detalhes">
+        <span>Faltas: <strong id="freq-faltas">0</strong></span>
+        <span>Limite: <strong id="freq-limite">0</strong></span>
+        <span>Margem: <strong id="freq-restantes">0</strong> check-ins</span>
+      </div>
+    </div>
+
+    <div class="contadores">
+      <div class="contador">
+        <strong id="contador-atividades">0</strong>
+        <span>cards capturados</span>
+      </div>
+      <div class="contador">
+        <strong id="contador-filtrados">0</strong>
+        <span>no filtro atual</span>
+      </div>
+    </div>
+
+    <input type="search" id="busca" placeholder="Buscar por título ou descrição…" />
+
+    <fieldset class="filtros">
+      <legend>Eixos</legend>
+      <div id="filtro-eixos" class="checkboxes"></div>
+    </fieldset>
+
+    <fieldset class="filtros">
+      <legend>Tipos de card</legend>
+      <div id="filtro-tipos" class="checkboxes"></div>
+      <label class="filtro-semana">
+        Semana:
+        <select id="filtro-semana">
+          <option value="">Todas</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <div class="acoes">
+      <button id="botao-csv">CSV</button>
+      <button id="botao-markdown">Markdown</button>
+      <button id="botao-json">JSON</button>
+      <button id="botao-copiar">Copiar</button>
+    </div>
+    <p id="aviso-copiado" class="sutil oculto">Copiado!</p>
+
+    <ul id="lista-atividades" class="lista"></ul>
+    <p id="vazio-autoestudos" class="vazio">
+      Nenhum card capturado ainda. Abra a Vida Acadêmica na Adalove com esta
+      extensão instalada e os dados aparecerão aqui.
+    </p>
+  </section>
+
+  <!-- =============================== NOTAS =============================== -->
+  <section id="painel-notas" class="painel oculto" role="tabpanel">
+    <div id="status-oficial" class="status-oficial"></div>
+
+    <div class="metricas">
+      <div class="metrica"><span>Média até o momento</span><strong id="media-momento">—</strong></div>
+      <div class="metrica"><span>Média acumulada</span><strong id="media-acumulada">—</strong></div>
+      <div class="metrica">
+        <span>Com participação
+          <select id="faixa-participacao">
+            <option value="A">A (+5%)</option>
+            <option value="B" selected>B (0%)</option>
+            <option value="C">C (−5%)</option>
+            <option value="D">D (−10%)</option>
+            <option value="E">E (−15%)</option>
+          </select>
+        </span>
+        <strong id="media-participacao">—</strong>
+      </div>
+    </div>
+
+    <div id="categorias" class="categorias"></div>
+
+    <div id="bloco-grafico" class="bloco-grafico oculto">
+      <h2>Evolução da média</h2>
+      <!-- SVG desenhado pelo popup.js (vanilla, sem lib de gráfico). -->
+      <div id="grafico-evolucao"></div>
+    </div>
+
+    <h2>Avaliações <span class="sutil">(edite uma nota para simular)</span></h2>
+    <div class="acoes">
+      <button id="botao-xlsx">Baixar planilha (.xlsx)</button>
+    </div>
+    <ul id="lista-avaliacoes" class="lista"></ul>
+    <p id="vazio-notas" class="vazio">
+      Nenhuma nota capturada ainda. Abra a Vida Acadêmica na Adalove com esta
+      extensão instalada.
+    </p>
+    <button id="botao-limpar-simulacao" class="secundario oculto">Limpar simulação</button>
+
+    <fieldset class="reverso">
+      <legend>Quanto preciso tirar?</legend>
+      <label>
+        Na avaliação
+        <select id="reverso-atividade"></select>
+      </label>
+      <label>
+        para fechar com média
+        <!-- text + inputmode decimal + máscara no popup.js: o type=number
+             engolia a vírgula em alguns locales. -->
+        <input type="text" inputmode="decimal" maxlength="4" id="reverso-media" value="6" />
+      </label>
+      <p id="reverso-resultado" class="resultado"></p>
+    </fieldset>
+  </section>
+
+  <!-- Autodiagnóstico: estado do service worker + alerta de versão antiga. -->
+  <p id="diagnostico" class="sutil"></p>
+  <p class="credito">Feito por Vinícius</p>
+
+  <!-- Módulos puros primeiro (expõem globais), popup.js por último os usa. -->
+  <script src="normalize.js"></script>
+  <script src="export.js"></script>
+  <script src="notas.js"></script>
+  <script src="xlsx.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
